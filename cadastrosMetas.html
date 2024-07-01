@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Metas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Cadastro de Metas</h2>
+        <form id="goalForm" data-type="goal">
+            <div class="form-group">
+                <label for="goal">Meta:</label>
+                <input type="text" id="goal" name="goal" required>
+            </div>
+            <div class="form-group">
+                <label for="startDate">Data de Início:</label>
+                <input type="date" id="startDate" name="startDate" required>
+            </div>
+            <div class="form-group">
+                <label for="endDate">Data de Término:</label>
+                <input type="date" id="endDate" name="endDate" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Descrição:</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="tag">Tag:</label>
+                <select id="tag" name="tag"></select>
+            </div>
+            <div class="form-group">
+                <button type="submit">Cadastrar Meta</button>
+            </div>
+            <input type="hidden" id="_id" name="_id">
+            <input type="hidden" id="_rev" name="_rev">
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/pouchdb/dist/pouchdb.min.js"></script>
+    <script src="cadastros/metas.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (id) {
+                loadGoal(id);
+            }
+
+            async function loadGoal(id) {
+                const db = new PouchDB('appdata');
+                try {
+                    const doc = await db.get(id);
+                    document.getElementById('goal').value = doc.goal;
+                    document.getElementById('startDate').value = doc.startDate;
+                    document.getElementById('endDate').value = doc.endDate;
+                    document.getElementById('description').value = doc.description;
+                    document.getElementById('tag').value = doc.tag;
+                    document.getElementById('_id').value = doc._id;
+                    document.getElementById('_rev').value = doc._rev;
+                } catch (err) {
+                    console.error('Erro ao carregar a meta:', err);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
